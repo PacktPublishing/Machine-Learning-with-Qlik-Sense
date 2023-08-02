@@ -1,0 +1,25 @@
+R.ScriptEval('
+q$id <- 1:nrow(q);
+F2 <- q[order(q$sales,q$discount),];
+F3 <- data.frame(sales=F2$sales ,discount=F2$discount);
+rows <- nrow(F2);
+
+write(c("----------------"),file="debug.txt",append=TRUE);
+summary<-summary(q);
+head<-capture.output(head(q))
+write(summary,file="debug.txt",append=TRUE);
+write(c("----------------"),file="debug.txt",append=TRUE);
+write(head,file="debug.txt",append=TRUE);
+write(c("----------------"),file="debug.txt",append=TRUE);
+
+if(rows >= $(clusters)){
+	set.seed(5);
+	clusterdata <- kmeans(F3,$(clusters),nstart = 20);
+    df <- data.frame(rowid=F2$id,data=clusterdata$cluster);
+	out <- df[order(df$rowid),];
+}else{
+	out$data <- c(rep(1,rows))
+}
+out$data',
+Sum(Sales) as sales,
+avg(Discount) as discount)
